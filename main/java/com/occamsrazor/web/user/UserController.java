@@ -1,6 +1,8 @@
 package com.occamsrazor.web.user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,26 @@ import com.occamsrazor.web.util.Messenger;
 @RequestMapping("/user")
 public class UserController {
 	@Autowired UserService userService;
+	
+	
 	@PostMapping("/join")
 	public Messenger join(@RequestBody User user) {
 		int count = userService.count();
-		userService.add(user);
-		return (userService.count() == count + 1) ? Messenger.SUCCESS : Messenger.FAIL;
+		userService.saveFile(user);
+	//	return (userService.count() == count + 1) ? Messenger.SUCCESS : Messenger.FAIL;
+		return Messenger.SUCCESS;
 	}
+	
+	
+	
+	
+	@GetMapping("/list")
+	public List<User> list() {
+		
+		return userService.readFile();
+//		return userService.list();
+	}
+	
 	
 	@PostMapping("/login")
 	public Map<String,Object> login(@RequestBody User user) {
@@ -39,20 +55,22 @@ public class UserController {
 		return returnMap;
 	}
 	
+	
+	
 	@GetMapping("/detail/{userid}")
 	public User detail(@PathVariable String userid) {
-		System.out.println("detail 진입한 id ::: "+userid);
 		return userService.detail(userid);
 	}
 	@PutMapping("/update")
 	public Messenger update(@RequestBody User user) {
-		System.out.println("upadate 정보 ::: "+ user);
-		return (userService.update(user)) ? Messenger.SUCCESS:Messenger.FAIL ;
+		System.out.println("update 정보 ::: "+user);
+		return (userService.update(user)) ? Messenger.SUCCESS: Messenger.FAIL;
 	}
 	@DeleteMapping("/remove/{userid}")
 	public Messenger remove(@PathVariable String userid) {
 		System.out.println("delete 정보 ::: "+userid);
-		return (userService.remove(userid))? Messenger.SUCCESS: Messenger.FAIL;
+		return (userService.remove(userid)) ? Messenger.SUCCESS: Messenger.FAIL;
 	}
 
 }
+
